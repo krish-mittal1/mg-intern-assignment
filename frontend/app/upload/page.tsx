@@ -14,7 +14,6 @@ export default function UploadPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<UploadResult | null>(null);
-  const [embedSign, setEmbedSign] = useState(false);
 
   function validate(f: File): string | null {
     if (f.type !== "application/pdf") return "Only PDF files work here.";
@@ -194,47 +193,41 @@ export default function UploadPage() {
 
           {result.signatureUrl && (
             <div className="mt-8 border-t border-line pt-7">
-              <div className="mb-4 flex gap-6 text-[0.88rem]">
-                <button
-                  type="button"
-                  onClick={() => setEmbedSign(false)}
-                  className={
-                    !embedSign
-                      ? "border-b border-ink pb-0.5 text-ink"
-                      : "text-muted"
-                  }
-                >
-                  Open in tab
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEmbedSign(true)}
-                  className={
-                    embedSign
-                      ? "border-b border-ink pb-0.5 text-ink"
-                      : "text-muted"
-                  }
-                >
-                  Sign here
-                </button>
-              </div>
+              <a
+                href={result.signatureUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block bg-accent px-6 py-3 text-[0.88rem] uppercase tracking-[0.08em] text-white transition-opacity hover:opacity-90"
+              >
+                Go to signing page
+              </a>
+              <p className="mt-3 text-[0.85rem] text-muted">
+                Signing opens in a new tab — Setu does not allow embedded signing.
+              </p>
 
-              {!embedSign ? (
-                <a
-                  href={result.signatureUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-block bg-accent px-6 py-3 text-[0.88rem] uppercase tracking-[0.08em] text-white transition-opacity hover:opacity-90"
-                >
-                  Go to signing page
-                </a>
-              ) : (
-                <iframe
-                  src={result.signatureUrl}
-                  title="Signing"
-                  className="h-[520px] w-full border border-line bg-white"
-                />
-              )}
+              <div className="mt-6 border border-line bg-surface p-4">
+                <p className="text-[0.72rem] uppercase tracking-[0.12em] text-faint">
+                  Sandbox test values
+                </p>
+                <p className="mt-2 text-[0.82rem] text-muted">
+                  Upload again if the signing page still shows &quot;Test Signer&quot;
+                  — old links expire and use stale signer data.
+                </p>
+                <dl className="mt-3 space-y-1.5 text-[0.85rem] text-muted">
+                  <div className="flex gap-3">
+                    <dt className="w-20 shrink-0 text-faint">Name</dt>
+                    <dd className="text-ink">Shivshankar Choudhury</dd>
+                  </div>
+                  <div className="flex gap-3">
+                    <dt className="w-20 shrink-0 text-faint">Aadhaar</dt>
+                    <dd className="font-mono text-ink">999999990019</dd>
+                  </div>
+                  <div className="flex gap-3">
+                    <dt className="w-20 shrink-0 text-faint">OTP</dt>
+                    <dd className="font-mono text-ink">123456</dd>
+                  </div>
+                </dl>
+              </div>
             </div>
           )}
 

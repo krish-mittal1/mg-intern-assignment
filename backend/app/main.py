@@ -23,7 +23,7 @@ app=FastAPI(title="MG Intern Assignment Backend", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["http://localhost:3000", "http://localhost:3001"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -68,8 +68,9 @@ async def upload_contract(
 
     signers = [
         {
-            "identifier": "999999990019",
-            "displayName": "Test Signer",
+            "identifier": "2810806979",
+            "displayName": "Shivshankar Choudhury",
+            "birthYear": "1968",
             "signerNo": 1,
             "signature": {
                 "onPages": ["1"],
