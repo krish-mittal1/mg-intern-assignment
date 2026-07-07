@@ -12,12 +12,16 @@ export default function Nav() {
   const pathname = usePathname();
 
   return (
-    <header className="border-b border-line bg-surface/80">
-      <div className="mx-auto flex max-w-3xl items-baseline justify-between px-5 py-4 sm:px-7">
-        <Link href="/" className="font-serif text-[1.35rem] tracking-tight text-ink">
-          signkit
+    <header className="sticky top-0 z-50 border-b border-line bg-paper/95 backdrop-blur">
+      <div className="mx-auto flex w-full max-w-[1120px] items-center justify-between px-6 py-4">
+        <Link
+          href="/"
+          className="font-serif text-[1.4rem] font-bold tracking-tight text-ink"
+        >
+          SignFlow
         </Link>
-        <nav className="flex gap-6 text-[0.9rem]">
+
+        <nav className="flex items-center gap-8 text-[0.95rem]">
           {links.map((l) => {
             const active = pathname === l.href;
             return (
@@ -26,8 +30,8 @@ export default function Nav() {
                 href={l.href}
                 className={
                   active
-                    ? "border-b-2 border-accent pb-0.5 text-ink"
-                    : "text-muted hover:text-ink"
+                    ? "border-b border-accent pb-0.5 text-accent"
+                    : "text-muted transition-colors hover:text-accent"
                 }
               >
                 {l.label}

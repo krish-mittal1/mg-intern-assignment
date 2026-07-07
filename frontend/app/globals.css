@@ -1,29 +1,58 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Segoe UI", system-ui, -apple-system, sans-serif;
-  --font-serif: Georgia, "Times New Roman", serif;
-  --color-paper: #f3f1eb;
-  --color-ink: #1a1917;
-  --color-muted: #6e6a62;
-  --color-line: #c9c4b8;
-  --color-accent: #b5491a;
-  --color-surface: #faf9f6;
+  --font-sans: var(--font-inter), "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-serif: var(--font-playfair), Georgia, "Times New Roman", serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", monospace;
+
+  --color-paper: #fbf9f3;
+  --color-sheet: #ffffff;
+  --color-surface: #f5f3ed;
+  --color-surface-high: #eae8e2;
+  --color-ink: #1b1c18;
+  --color-muted: #56423d;
+  --color-faint: #89726c;
+  --color-line: #dcc0ba;
+  --color-accent: #9a4028;
+  --color-accent-soft: #c25e44;
+  --color-signed: #2e7d32;
+
+  --radius-none: 0px;
 }
 
 body {
   background-color: var(--color-paper);
   color: var(--color-ink);
-  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: #e8ddd0;
+  background: #f1ddd1;
 }
 
 input:focus,
-button:focus-visible {
+textarea:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+button:focus-visible,
+a:focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rise {
+  animation: rise 0.5s ease both;
 }

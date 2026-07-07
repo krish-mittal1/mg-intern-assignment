@@ -22,3 +22,6 @@ build/
 *.log
 backend/test.pdf
 backend/*.pdf
+
+# Cursor (MCP config contains API keys)
+.cursor/

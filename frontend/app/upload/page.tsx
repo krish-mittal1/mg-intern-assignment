@@ -55,118 +55,165 @@ export default function UploadPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-5 py-11 sm:px-7 sm:py-14">
-      <h1 className="font-serif text-[1.9rem] text-ink">Upload</h1>
-      <p className="mt-2 text-[0.95rem] text-muted">
-        PDF only. We&apos;ll upload to Setu and spin up a signature request.
-      </p>
+    <div className="mx-auto w-full max-w-[1120px] px-6 py-16">
+      <section className="mb-10">
+        <h1 className="font-serif text-[2.6rem] font-bold text-ink">Upload</h1>
+        <p className="mt-3 max-w-2xl text-[1.05rem] leading-relaxed text-muted">
+          PDF only. We upload it to Setu and open a signature request.
+        </p>
+      </section>
 
-      <div
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
-        onClick={() => inputRef.current?.click()}
-        onDragOver={(e) => {
-          e.preventDefault();
-          setDragOver(true);
-        }}
-        onDragLeave={() => setDragOver(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setDragOver(false);
-          pick(e.dataTransfer.files[0]);
-        }}
-        className={`mt-8 cursor-pointer border px-6 py-10 transition-colors ${
-          dragOver
-            ? "border-accent bg-surface"
-            : "border-line bg-surface/50 hover:border-ink/25"
-        }`}
-      >
-        <input
-          ref={inputRef}
-          type="file"
-          accept="application/pdf"
-          className="hidden"
-          onChange={(e) => pick(e.target.files?.[0])}
-        />
+      <div className="border border-line bg-sheet p-6 sm:p-10">
+        <div
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && inputRef.current?.click()}
+          onClick={() => inputRef.current?.click()}
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            pick(e.dataTransfer.files[0]);
+          }}
+          className={`flex h-64 cursor-pointer flex-col items-center justify-center border border-dashed transition-colors ${
+            dragOver
+              ? "border-accent bg-surface"
+              : "border-faint bg-paper hover:bg-surface"
+          }`}
+        >
+          <input
+            ref={inputRef}
+            type="file"
+            accept="application/pdf"
+            className="hidden"
+            onChange={(e) => pick(e.target.files?.[0])}
+          />
 
-        {file ? (
-          <div>
-            <p className="text-[0.85rem] uppercase tracking-wide text-muted">selected</p>
-            <p className="mt-1 font-medium text-ink">{file.name}</p>
-            <p className="mt-0.5 text-[0.88rem] text-muted">
-              {(file.size / 1024).toFixed(0)} KB
-            </p>
-          </div>
-        ) : (
-          <div>
-            <p className="text-ink">Drop a PDF here or click to browse</p>
-            <p className="mt-2 text-[0.88rem] text-muted">Max {MAX_MB} MB</p>
-          </div>
-        )}
-      </div>
+          {file ? (
+            <div className="text-center">
+              <p className="text-[0.72rem] uppercase tracking-[0.12em] text-faint">
+                selected
+              </p>
+              <p className="mt-2 font-serif text-[1.3rem] text-ink">
+                {file.name}
+              </p>
+              <p className="mt-1 text-[0.85rem] text-muted">
+                {(file.size / 1024).toFixed(0)} KB
+              </p>
+            </div>
+          ) : (
+            <div className="text-center">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                className="mx-auto mb-4 h-9 w-9 text-accent/70"
+              >
+                <path d="M12 16V4m0 0-4 4m4-4 4 4" />
+                <path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+              </svg>
+              <p className="font-serif text-[1.3rem] text-ink">
+                Drop a PDF here or click to browse
+              </p>
+              <p className="mt-2 text-[0.72rem] uppercase tracking-[0.12em] text-faint">
+                Max {MAX_MB} MB
+              </p>
+            </div>
+          )}
+        </div>
 
-      {progress !== null && loading && (
-        <div className="mt-5">
-          <div className="mb-1.5 flex justify-between text-[0.82rem] text-muted">
-            <span>Uploading</span>
-            <span>{progress}%</span>
+        <div className="mt-7 space-y-2">
+          <div className="flex items-end justify-between">
+            <span className="text-[0.72rem] uppercase tracking-[0.12em] text-faint">
+              {file ? file.name : "No file selected"}
+            </span>
+            {progress !== null && loading && (
+              <span className="text-[0.72rem] uppercase tracking-[0.12em] text-accent">
+                {progress}%
+              </span>
+            )}
           </div>
-          <div className="h-1.5 w-full bg-line">
+          <div className="h-[2px] w-full bg-surface-high">
             <div
-              className="h-full bg-accent transition-all duration-200"
-              style={{ width: `${progress}%` }}
+              className="h-full bg-accent transition-all duration-300 ease-out"
+              style={{ width: `${progress ?? 0}%` }}
             />
           </div>
         </div>
-      )}
 
-      {error && (
-        <p className="mt-5 border-l-2 border-accent pl-3 text-[0.92rem] text-ink">
-          {error}
-        </p>
-      )}
+        {error && (
+          <p className="mt-6 border-l-2 border-accent pl-3 text-[0.92rem] text-ink">
+            {error}
+          </p>
+        )}
 
-      <button
-        type="button"
-        onClick={handleUpload}
-        disabled={!file || loading}
-        className="mt-7 bg-ink px-6 py-2.5 text-[0.92rem] text-white disabled:cursor-not-allowed disabled:opacity-40"
-      >
-        {loading ? "Working on it…" : "Upload & request signature"}
-      </button>
+        <div className="mt-10">
+          <button
+            type="button"
+            onClick={handleUpload}
+            disabled={!file || loading}
+            className="flex items-center gap-3 bg-accent px-9 py-4 text-[0.9rem] uppercase tracking-[0.08em] text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+          >
+            {loading ? "Working on it…" : "Upload & request signature"}
+          </button>
+        </div>
+      </div>
 
       {result && (
-        <section className="mt-12 border-t border-line pt-9">
-          <p className="text-[0.82rem] uppercase tracking-[0.12em] text-muted">
-            request created
-          </p>
+        <section className="rise mt-10 border border-line border-t-4 border-t-accent bg-sheet p-6 sm:p-8">
+          <div className="mb-8 flex items-center gap-3">
+            <span className="h-2 w-2 rounded-full bg-signed" />
+            <h3 className="text-[0.72rem] uppercase tracking-[0.14em] text-ink">
+              request created
+            </h3>
+          </div>
 
-          <dl className="mt-5 space-y-3 text-[0.92rem]">
-            <div className="flex flex-col gap-0.5 sm:flex-row sm:gap-4">
-              <dt className="w-28 shrink-0 text-muted">Document</dt>
-              <dd className="break-all font-mono text-[0.85rem]">{result.documentId}</dd>
+          <dl className="grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2">
+            <div className="space-y-1">
+              <dt className="text-[0.72rem] uppercase tracking-[0.12em] text-faint">
+                Document ID
+              </dt>
+              <dd className="break-all font-mono text-[0.9rem] text-ink">
+                {result.documentId}
+              </dd>
             </div>
-            <div className="flex flex-col gap-0.5 sm:flex-row sm:gap-4">
-              <dt className="w-28 shrink-0 text-muted">Signature</dt>
-              <dd className="break-all font-mono text-[0.85rem]">{result.signatureId}</dd>
+            <div className="space-y-1">
+              <dt className="text-[0.72rem] uppercase tracking-[0.12em] text-faint">
+                Signature ID
+              </dt>
+              <dd className="break-all font-mono text-[0.9rem] text-ink">
+                {result.signatureId}
+              </dd>
             </div>
           </dl>
 
           {result.signatureUrl && (
-            <div className="mt-7">
-              <div className="mb-3 flex gap-5 text-[0.88rem]">
+            <div className="mt-8 border-t border-line pt-7">
+              <div className="mb-4 flex gap-6 text-[0.88rem]">
                 <button
                   type="button"
                   onClick={() => setEmbedSign(false)}
-                  className={!embedSign ? "border-b border-ink text-ink" : "text-muted"}
+                  className={
+                    !embedSign
+                      ? "border-b border-ink pb-0.5 text-ink"
+                      : "text-muted"
+                  }
                 >
                   Open in tab
                 </button>
                 <button
                   type="button"
                   onClick={() => setEmbedSign(true)}
-                  className={embedSign ? "border-b border-ink text-ink" : "text-muted"}
+                  className={
+                    embedSign
+                      ? "border-b border-ink pb-0.5 text-ink"
+                      : "text-muted"
+                  }
                 >
                   Sign here
                 </button>
@@ -177,9 +224,9 @@ export default function UploadPage() {
                   href={result.signatureUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-block bg-accent px-5 py-2 text-[0.9rem] text-white hover:bg-[#9a3d19]"
+                  className="inline-block bg-accent px-6 py-3 text-[0.88rem] uppercase tracking-[0.08em] text-white transition-opacity hover:opacity-90"
                 >
-                  Go to signing page →
+                  Go to signing page
                 </a>
               ) : (
                 <iframe
@@ -191,11 +238,11 @@ export default function UploadPage() {
             </div>
           )}
 
-          <p className="mt-8 text-[0.88rem] text-muted">
+          <p className="mt-8 text-[0.9rem] text-muted">
             Track progress on the{" "}
             <Link
               href={`/status?id=${encodeURIComponent(result.signatureId ?? "")}`}
-              className="text-ink underline underline-offset-2"
+              className="text-accent underline underline-offset-2"
             >
               status page
             </Link>
