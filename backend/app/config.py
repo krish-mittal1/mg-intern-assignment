@@ -13,5 +13,6 @@ class Settings(BaseSettings):
     x_product_instance_id:str
     sign_redirect_url: str | None = None
     database_url: str | None = None
+    cors_origins: str = "http://localhost:3000,http://localhost:3001"
 
 settings=Settings()
