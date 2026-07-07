@@ -145,7 +145,37 @@ Frontend runs at `http://localhost:3000`.
    stored status when Setu reports a change.
 5. Once signed, the signed PDF is fetched through `/api/download/{signature_id}`.
 
+## Sandbox signing limitation
+
+The upload and create-signature APIs work end to end against the Setu sandbox
+(both return `201`, with a valid signing URL). The final OTP step, however, runs
+on Setu's hosted eSign screen, which is served by their ESP partner (eMudhra).
+
+In the current sandbox, that hosted page rejects the documented test Aadhaar
+(`999999990019`) with `Invalid Aadhaar Number/Virtual ID`, so a request cannot
+reach `sign_complete` from our side. This is an ESP sandbox behaviour, not an
+issue with the integration — the same number is rejected on Setu's own API
+Playground and when signing links are opened directly.
+
+What this means for the flow:
+
+| Step                        | Works in sandbox |
+|-----------------------------|------------------|
+| Upload document             | Yes              |
+| Create signature request    | Yes              |
+| Open Setu signing page      | Yes              |
+| Complete OTP on eSign page  | No (ESP sandbox) |
+| Status becomes `sign_complete` | Only after OTP |
+| Download signed PDF         | Only after OTP   |
+
+The status endpoint, polling, database persistence, and download route are all
+implemented and function as soon as a request reaches `sign_complete` (verified
+against the expected Setu response shape).
+
 ## Notes
 
 - Secrets live only in `backend/.env` (gitignored). Never commit real keys.
-- CORS is limited to `http://localhost:3000` in development.
+- CORS is limited to `http://localhost:3000` (and `:3001`) in development.
+- In production, secrets would be managed through a secrets manager (AWS Secrets
+  Manager, Vault, or platform-level encrypted env vars) with periodic rotation,
+  rather than a committed `.env` file.
