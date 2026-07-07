@@ -63,6 +63,22 @@ export function downloadUrl(signatureId: string) {
   return `${BACKEND_URL}/api/download/${encodeURIComponent(signatureId)}`;
 }
 
+export type ContractRecord = {
+  documentId: string;
+  signatureId: string;
+  signatureUrl?: string | null;
+  filename: string;
+  status?: string;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export async function fetchContracts(): Promise<ContractRecord[]> {
+  const res = await fetch(`${BACKEND_URL}/api/contracts`);
+  if (!res.ok) throw new Error(`Could not load history (${res.status})`);
+  return res.json();
+}
+
 export function extractDocumentId(status: Record<string, unknown>): string | null {
   const direct = status.documentId ?? status.document_id;
   if (typeof direct === "string") return direct;

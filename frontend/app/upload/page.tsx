@@ -3,7 +3,6 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { uploadContract, type UploadResult } from "@/lib/api";
-import { saveRecord } from "@/lib/storage";
 
 const MAX_MB = 10;
 
@@ -47,15 +46,6 @@ export default function UploadPage() {
     try {
       const data = await uploadContract(file, setProgress);
       setResult(data);
-      if (data.signatureId && data.documentId) {
-        saveRecord({
-          documentId: data.documentId,
-          signatureId: data.signatureId,
-          signatureUrl: data.signatureUrl,
-          filename: file.name,
-          createdAt: new Date().toISOString(),
-        });
-      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Something went wrong");
     } finally {

@@ -12,5 +12,6 @@ class Settings(BaseSettings):
     x_client_secret:str
     x_product_instance_id:str
     sign_redirect_url: str | None = None
+    database_url: str | None = None
 
 settings=Settings()

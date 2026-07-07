@@ -6,9 +6,10 @@ import {
   downloadUrl,
   extractDocumentId,
   extractStatusLabel,
+  fetchContracts,
   getSignatureStatus,
+  type ContractRecord,
 } from "@/lib/api";
-import { loadHistory, type ContractRecord } from "@/lib/storage";
 
 const POLL_MS = 4000;
 
@@ -34,7 +35,9 @@ export default function StatusClient() {
   const [polling, setPolling] = useState(false);
 
   useEffect(() => {
-    setHistory(loadHistory());
+    fetchContracts()
+      .then(setHistory)
+      .catch(() => setHistory([]));
     const fromUrl = searchParams.get("id");
     if (fromUrl) setSignatureId(fromUrl);
   }, [searchParams]);
@@ -55,7 +58,7 @@ export default function StatusClient() {
 
       let docId = extractDocumentId(data);
       if (!docId) {
-        const match = loadHistory().find((h) => h.signatureId === id.trim());
+        const match = history.find((h) => h.signatureId === id.trim());
         docId = match?.documentId ?? null;
       }
       setDocumentId(docId);
@@ -70,7 +73,7 @@ export default function StatusClient() {
     } finally {
       if (!silent) setLoading(false);
     }
-  }, []);
+  }, [history]);
 
   useEffect(() => {
     if (!polling || !signatureId.trim()) return;
