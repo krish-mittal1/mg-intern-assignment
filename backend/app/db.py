@@ -18,7 +18,13 @@ class Base(DeclarativeBase):
 
 _db_url = settings.database_url or "sqlite+aiosqlite:///./esign.db"
 
-engine = create_async_engine(_db_url, echo=False, future=True)
+engine = create_async_engine(
+    _db_url,
+    echo=False,
+    future=True,
+    pool_pre_ping=True,
+    pool_recycle=300,
+)
 SessionLocal = async_sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
 
 
