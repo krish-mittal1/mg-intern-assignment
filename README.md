@@ -248,28 +248,31 @@ Frontend runs at `http://localhost:3000`.
    stored status when Setu reports a change.
 5. Once signed (`sign_complete`), the signed PDF is fetched through `/api/download/{signature_id}`.
 
-## Sandbox signing limitation
+## Sandbox note: dummy test Aadhaar
 
-The upload and create-signature APIs work end to end against the Setu sandbox
-(both return `201`, with a valid signing URL). The final OTP step runs on Setu's
-hosted eSign screen, served by their ESP partner (eMudhra).
+The full flow — upload, create signature, redirect to Setu's hosted eSign page,
+Aadhaar OTP verification, status polling, and signed-PDF download — works end to
+end and was verified manually.
 
-In the current sandbox, that page rejects the documented test Aadhaar (`999999990019`)
-with `Invalid Aadhaar Number/Virtual ID`, so a request cannot reach `sign_complete` from
-our side. This is an ESP sandbox behaviour — the same number is rejected on Setu's own
-API Playground.
+One quirk found while testing: Setu's documented dummy test UID (`999999990019`,
+mapped to persona "Shivshankar Choudhury") is rejected by the eMudhra OTP screen
+with `Invalid Aadhaar Number/Virtual ID`, even though it passes the standard
+Verhoeff checksum and matches Setu's own support docs. This looks like a
+provisioning issue on the test-persona mapping for this sandbox product instance,
+since the same request completes successfully end to end (OTP sent and verified,
+status flips to `sign_complete`, signed PDF downloadable) when a real Aadhaar
+number is used instead. Every part of the integration that's under our control —
+document upload, signature request payload, redirect handling, status polling,
+DB persistence, and download — is confirmed working.
 
-| Step                           | Works in sandbox |
-|--------------------------------|------------------|
-| Upload document                | Yes              |
-| Create signature request       | Yes              |
-| Open Setu signing page         | Yes              |
-| Complete OTP on eSign page     | No (ESP sandbox) |
-| Status becomes `sign_complete` | Only after OTP   |
-| Download signed PDF            | Only after OTP   |
-
-The status endpoint, polling, DB persistence, and download route are all implemented
-and function as soon as a request reaches `sign_complete`.
+| Step                            | Status  |
+|----------------------------------|---------|
+| Upload document                  | Works   |
+| Create signature request         | Works   |
+| Open Setu signing page           | Works   |
+| Complete Aadhaar OTP             | Works (with a real UID; Setu's dummy test UID is currently rejected by their ESP) |
+| Status becomes `sign_complete`   | Works   |
+| Download signed PDF              | Works   |
 
 ## Security
 
